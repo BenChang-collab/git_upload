@@ -1,0 +1,129 @@
+--2
+ CREATE TABLE EVACUATION_FACILITY
+   (	EF_NO VARCHAR2(4 BYTE) primary key, 
+	VILLAGE_NO VARCHAR2(4 BYTE), 
+	ADDR NVARCHAR2(100), 
+	BASEMENT NUMBER(2,0), 
+	CAPACITY NUMBER(5,0), 
+	PO_NO VARCHAR2(4 BYTE), 
+	CATEGORY_NO NVARCHAR2(50)
+   ); 
+  CREATE TABLE VILLAGE 
+   (	VILLAGE_NO VARCHAR2(4) primary key, 
+	VILLAGE NVARCHAR2(10), 
+	ADDR NVARCHAR2(100), 
+	TEL VARCHAR2(20), 
+   );
+  CREATE TABLE PO
+   (	PO_NO VARCHAR2(4) primary key, 
+	OFFICE NVARCHAR2(10), 
+	ADDR NVARCHAR2(100), 
+	TEL VARCHAR2(20), 
+   ); 
+
+--3
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D001','C001','竹南鎮中埔街20號',1,100,'M001','公寓');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D002','C002','竹南鎮和平街79號',1,3142,'M001','大樓');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D003','C003','竹南鎮龍山路三段142號',1,1072,'M001','大樓');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D004','C004','後龍鎮中華路1498號',1,32,'M001','公共設施');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D005','C005','米市街80號',1,106,'M002','公寓');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D006','C005','苗栗市光復路117號',1,26,'M002','公寓');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D007','C005','苗栗市博愛街109號',2,2038,'M002','大樓');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D008','C005','苗栗市大同路53號',2,128,'M002','大樓');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D009','C006','頭份市民族里和平路102號',1,353,'M003','公共設施');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D010','C007','頭份市忠孝忠孝一路69號',1,501,'M003','私營單位');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D011','C008','頭份市信義里中正路65號',1,194,'M003','公寓');
+Insert into EVACUATION_FACILITY (EF_NO,VILLAGE_NO,ADDR,BASEMENT,CAPACITY,PO_NO,CATEGORY_NO) values ('D012','C008','頭份市信義里中正路116號',1,78,'M003','私營單位');
+
+Insert into VILLAGE values ('C001','大埔里','竹南鎮公義路1035號','03 758 1072');
+Insert into VILLAGE values ('C002','竹南里','竹南鎮竹南里中山路 103 號','037-472735');
+Insert into VILLAGE values ('C003','山佳里','竹南鎮山佳里國光街 14 號','037-614186');
+Insert into VILLAGE values ('C004','埔頂里','後龍鎮埔頂里中興路136-1號','037-724839');
+Insert into VILLAGE values ('C005','綠苗里','苗栗市綠苗里中正路 766 號','037-333240');
+Insert into VILLAGE values ('C006','民族里','民族里民族路96號','037-660001');
+Insert into VILLAGE values ('C007','忠孝里','忠孝里光大街82號','037-661145');
+Insert into VILLAGE values ('C008','信義里','信義里信義路53巷1號','037-616072');
+
+
+Insert into PO values ('M001','竹南分局','竹南鎮民族街72號','03 747 4796');
+Insert into PO values ('M002','苗栗分局','苗栗市金鳳街109號','03 732 0059');
+Insert into PO values ('M003','頭份分局','頭份市中興路503號','03 766 3004');
+
+--4-1
+select distinct 
+    p.OFFICE as 管轄分局,
+    p.TEL as 分局連絡電話
+ from  
+    EVACUATION_FACILITY e
+ left join PO p on p.PO_NO = e.PO_NO
+ where CAPACITY >1000;
+
+--4-2 解答1
+select  
+    p.OFFICE as 管轄分局,
+    p.TEL as 分局聯絡電話,
+    count(e.PO_NO) as 轄管分局數量
+ from EVACUATION_FACILITY e
+ left join PO p on p.PO_NO = e.PO_NO
+ where e.CAPACITY >1000
+ group by p.OFFICE,p.TEL;
+
+--4-2 解答2
+select  distinct
+    p.OFFICE as 管轄分局,
+    p.TEL as 分局聯絡電話,
+    count (p.OFFICE) over ( partition by p.OFFICE )as 轄管分局數量
+ from  EVACUATION_FACILITY e
+ left join PO p on p.PO_NO=e.PO_NO
+ where  e.CAPACITY >1000;
+
+
+
+--4-3
+select  
+    p.OFFICE as 管轄分局,
+    p.TEL as 分局聯絡電話,
+    count(e.PO_NO) as 轄管分局數量,
+    e.ADDR as 避難設施地址,
+    e.CATEGORY_NO as 類型
+ from  
+    EVACUATION_FACILITY e
+ left join PO p on p.PO_NO = e.PO_NO
+ where e.CAPACITY >1000
+ group by 
+    p.OFFICE,p.TEL,e.ADDR,e.CATEGORY_NO;
+    
+--4-4
+select 
+    v.VILLAGE as 村里別,
+    e.ADDR as 避難設施地址,
+    e.CAPACITY as 容人數量,
+    p.OFFICE as 管轄分局,
+    p.TEL as 分局聯絡電話
+ from EVACUATION_FACILITY e
+ left join VILLAGE v on e.VILLAGE_NO = v.VILLAGE_NO
+ left join PO p on e.PO_NO=p.PO_NO
+ where e.ADDR like '%中%';
+
+--4-5
+select 
+    v.VILLAGE as 村里別,
+    v.ADDR as 村里辦公室位置,
+    e.ADDR as 避難設施地址 ,
+    e.CAPACITY as 容人數量,
+    e.CATEGORY_NO as 類型
+ from  EVACUATION_FACILITY e
+ left join VILLAGE v on v.VILLAGE_NO = e.VILLAGE_NO
+ where CATEGORY_NO in ('公寓','大樓');
+
+
+
+--5-1
+select * from  EVACUATION_FACILITY where ADDR ='竹南鎮和平街79號';
+update  EVACUATION_FACILITY set CAPACITY='5000' where ADDR ='竹南鎮和平街79號';
+
+
+--5-2
+delete from EVACUATION_FACILITY where CAPACITY<1000;
+
+
