@@ -1,14 +1,15 @@
 --2
- commit;
+
  create table STUDENT.EVACUATION_FACILITY
    (	EF_NO varchar2(4 byte) primary key, 
 	VILLAGE_NO varchar2(4 byte), 
 	ADDR nvarchar2(100), 
 	BASEMENT number(2,0), 
 	CAPACITY number(5,0), 
-	STUDENT.PO_NO varchar2(4 byte), 
+	PO_NO varchar2(4 byte), 
 	CATEGORY_NO nvarchar2(50)
    ); 
+ commit;
   create table STUDENT.VILLAGE 
    (	VILLAGE_NO VARCHAR2(4) primary key, 
 	VILLAGE NVARCHAR2(10), 
