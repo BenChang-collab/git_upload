@@ -3,14 +3,17 @@ package com.cathaybk.practice.nt50354.b;
 public class Supervisor extends Employee {
 	private int payment;
 
-	public Supervisor(String name, String department, int payment) {
-		super(name, department);
-		this.payment = payment;
+	public Supervisor(String name, String department, int salary) {
+		super(name, department, salary);
+		this.payment = salary;
 	}
 
 	public void printInfo() {
 		super.printInfo();
-		System.out.println("月薪:" + payment + "\n" + "總計:" + payment);
+		StringBuilder str = new StringBuilder();
+		str.append("月薪:").append(getSalary()).append("\n").append("總計:").append(getSalary());
+		System.out.println(str.toString());
+		str.setLength(0);
 	}
 
 	public int getPayment() {

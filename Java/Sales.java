@@ -5,19 +5,23 @@ public class Sales extends Employee {
 	private int bouns;
 	private int percent = 5;// 業務獎金%數
 
-	public Sales(String name, String department, int payment, int bouns) {
-		super(name, department);
-		this.payment = payment;
-		this.bouns = bouns;
+	public Sales(String name, String department, int salary, int bouns) {
+		super(name, department, salary);
+		this.bouns = bouns / 100 * percent;
+		this.payment = (salary + this.bouns);
+		
 	}
 
 	public void printInfo() {
 		super.printInfo();
-		System.out.println("月薪:" + payment + "\n" + "業績獎金:" + getBouns() + "\n" + "總計:" + (payment + getBouns()));
+		StringBuilder str = new StringBuilder();
+		str.append("月薪:").append(getSalary()).append("\n").append("業績獎金:").append(bouns).append("\n").append("總計:").append(payment);
+		System.out.println(str.toString());
+		str.setLength(0);
 	}
 
 	public int getBouns() {
-		return bouns / 100 * percent;
+		return bouns;
 	}
 
 	public void setBouns(int bouns) {

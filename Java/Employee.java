@@ -5,13 +5,17 @@ public class Employee implements IWork {
 	private String department;
 	private int salary;
 
-	public Employee(String name, String department) {
+	public Employee(String name, String department,int salary) {
 		this.name = name;
 		this.department = department;
+		this.salary = salary;
 	}
 
 	public void printInfo() {
-		System.out.print("薪資單" + "\n" + "姓名:" + name + "  工作部門:" + department + "\n");
+		StringBuilder str = new StringBuilder();
+		str.append("薪資單").append("\n").append("姓名:").append(name).append(" ").append("工作部門:").append(department);
+		System.out.println(str.toString());
+		str.setLength(0);
 	}
 
 	public String getName() {

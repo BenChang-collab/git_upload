@@ -16,20 +16,20 @@ public class HRMain {
 		for (Employee employee : employeesList) {
 			employee.printInfo();
 		}
-		try {
-			OutputStreamWriter output = new OutputStreamWriter(
-					new FileOutputStream("C:/Users/Admin/Desktop/Java班/git_upload/Java/output.csv"), "UTF-8");
-			for (Employee listEmployee : employeesList) {
-				if (listEmployee instanceof Supervisor) {
-					output.write(listEmployee.getName() + "," + (((Supervisor) listEmployee).getPayment()) + "\n");
+		try (OutputStreamWriter output = new OutputStreamWriter(
+				new FileOutputStream("C:/Users/Admin/Desktop/Java班/git_upload/Java/output.csv"), "UTF-8");) {
+			for (Employee Employee : employeesList) {
+				output.write(new String(new byte[] { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF }));
+				int payment;
+				if (Employee instanceof Supervisor) {
+					payment = ((Supervisor) Employee).getPayment();
 				} else {
-					output.write(listEmployee.getName() + ","
-							+ (((Sales) listEmployee).getPayment() + ((Sales) listEmployee).getBouns()) + "\n");
+					payment = ((Sales) Employee).getPayment();
 				}
+				output.write(Employee.getName() + "," + payment + "\n");
 			}
-			output.close();
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 }
