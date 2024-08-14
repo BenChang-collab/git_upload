@@ -11,15 +11,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Db {
-	public static final String CONN_URL = "jdbc:oracle:thin:@//localhost:1521/XE";
-	public static final String QUERY = "select * from STUDENT.CARS where MANUFACTURER = ? and TYPE = ?";
-	public static final String INSERT = "insert into STUDENT.CARS (MANUFACTURER, TYPE, MIN_PRICE, PRICE) values (?, ?, ?, ?)";
-	public static final String UPDATE = "update STUDENT.CARS set  MIN_PRICE= ? , PRICE=? where MANUFACTURER = ? and TYPE=?";
-	public static final String DELETE = "DELETE FROM STUDENT.CARS WHERE MANUFACTURER = ? and TYPE=?";
+/**
+ * java評量第7題，寫此檔案的作用，在class前
+ * 
+ */
+
+public class Db {// public > private
+	private static final String CONN_URL = "jdbc:oracle:thin:@//localhost:1521/XE";
+	private static final String QUERY = "select * from STUDENT.CARS where MANUFACTURER = ? and TYPE = ?";
+	private static final String INSERT = "insert into STUDENT.CARS (MANUFACTURER, TYPE, MIN_PRICE, PRICE) values (?, ?, ?, ?)";
+	private static final String UPDATE = "update STUDENT.CARS set  MIN_PRICE= ? , PRICE=? where MANUFACTURER = ? and TYPE=?";
+	private static final String DELETE = "delete from STUDENT.CARS where MANUFACTURER = ? and TYPE=?"; // 按sql規範小寫
+	private static final String USER_NAME = "student";
+	private static final String PASSWORD = "student123456";
 
 	public static void main(String[] args) {
-		try (Connection conn = DriverManager.getConnection(CONN_URL, "student", "student123456");
+		try (Connection conn = DriverManager.getConnection(CONN_URL, USER_NAME, PASSWORD); // 後續維護方便
 				PreparedStatement pstmt = conn.prepareStatement("select * from STUDENT.CARS");) {
 			ResultSet rs = pstmt.executeQuery();
 			List<Map<String, String>> carslist = new ArrayList<>();
@@ -42,22 +49,30 @@ public class Db {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("請選擇以下指令輸入:select、insert、update、delete");
 		String instruction = scanner.next();
-
-		if ("select".equals(instruction)) {
+		// switch 更簡潔，輸入非四種指令，問預設值。
+		switch (instruction) {
+		case "select":
 			doQuery();
-		} else if ("insert".equals(instruction)) {
+			break;
+		case "insert":
 			doInsert();
-		} else if ("update".equals(instruction)) {
+			break;
+		case "update":
 			doUpdate();
-		} else {
+			break;
+		case "delete":
 			doDelete();
+			break;
+		default:
+			System.out.println("請輸入這四種指令之一");
+			break;
 		}
 		scanner.close();
 
 	}
 
 	public static void doQuery() {
-		try (Connection conn = DriverManager.getConnection(CONN_URL, "student", "student123456");
+		try (Connection conn = DriverManager.getConnection(CONN_URL, USER_NAME, PASSWORD);
 				PreparedStatement pstmt = conn.prepareStatement(QUERY);) {
 			conn.setAutoCommit(false);
 			Scanner qScanner = new Scanner(System.in);
@@ -82,7 +97,7 @@ public class Db {
 	}
 
 	public static void doInsert() {
-		try (Connection conn = DriverManager.getConnection(CONN_URL, "student", "student123456");) {
+		try (Connection conn = DriverManager.getConnection(CONN_URL, USER_NAME, PASSWORD);) {
 			try {
 				PreparedStatement pstmt = conn.prepareStatement(INSERT);
 				{
@@ -118,35 +133,38 @@ public class Db {
 	}
 
 	public static void doUpdate() {
-		try (Connection conn = DriverManager.getConnection(CONN_URL, "student", "student123456");) {
+		try (Connection conn = DriverManager.getConnection(CONN_URL, USER_NAME, PASSWORD);) {
 			try {
 				PreparedStatement pstmt = conn.prepareStatement(UPDATE);
-				{
-					conn.setAutoCommit(false);
-					Scanner uScanner = new Scanner(System.in);
-					System.out.println("請輸入底價:");
-					String mp = uScanner.next();
-					System.out.println("請輸入售價:");
-					String p = uScanner.next();
-					System.out.println("請輸入製造商:");
-					String m = uScanner.next();
-					System.out.println("請輸入類型:");
-					String t = uScanner.next();
-					pstmt.setString(1, mp);
-					pstmt.setString(2, p);
-					pstmt.setString(3, m);
-					pstmt.setString(4, t);
-					pstmt.executeUpdate();
+				conn.setAutoCommit(false);
+				Scanner uScanner = new Scanner(System.in);
+				System.out.println("請輸入底價:");
+				String mp = uScanner.next();
+				System.out.println("請輸入售價:");
+				String p = uScanner.next();
+				System.out.println("請輸入製造商:");
+				String m = uScanner.next();
+				System.out.println("請輸入類型:");
+				String t = uScanner.next();
+				pstmt.setString(1, mp);
+				pstmt.setString(2, p);
+				pstmt.setString(3, m);
+				pstmt.setString(4, t);
+				int result = pstmt.executeUpdate();// SQL回傳是否成功
+				if (result > 0) {
 					conn.commit();
 					System.out.println("修改成功");
+				} else {
+					System.out.println("修改失敗");
+					try {
+						conn.rollback();
+					} catch (SQLException sqle) {
+						System.out.println("rollback 失敗，原因：" + sqle.getMessage());
+					}
 				}
+
 			} catch (Exception e) {
 				System.out.println("修改失敗，原因：" + e.getMessage());
-				try {
-					conn.rollback();
-				} catch (SQLException sqle) {
-					System.out.println("rollback 失敗，原因：" + sqle.getMessage());
-				}
 			}
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
@@ -154,7 +172,7 @@ public class Db {
 	}
 
 	public static void doDelete() {
-		try (Connection conn = DriverManager.getConnection(CONN_URL, "student", "student123456");) {
+		try (Connection conn = DriverManager.getConnection(CONN_URL, USER_NAME, PASSWORD);) {
 			try {
 				PreparedStatement pstmt = conn.prepareStatement(DELETE);
 				{
@@ -166,18 +184,21 @@ public class Db {
 					String t = dScanner.next();
 					pstmt.setString(1, m);
 					pstmt.setString(2, t);
-					pstmt.executeUpdate();
-					conn.commit();
-					System.out.println("刪除成功");
+					int result = pstmt.executeUpdate();
+					if (result > 0) {
+						conn.commit();
+						System.out.println("刪除成功");
+					} else {
+						try {
+							conn.rollback();
+							System.out.println("刪除失敗");
+						} catch (SQLException sqle) {
+							System.out.println("rollback 失敗，原因：" + sqle.getMessage());
+						}
+					}
 				}
 			} catch (Exception e) {
 				System.out.println("刪除失敗，原因：" + e.getMessage());
-				try {
-					conn.rollback();
-
-				} catch (SQLException sqle) {
-					System.out.println("rollback 失敗，原因：" + sqle.getMessage());
-				}
 			}
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
