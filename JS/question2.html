@@ -17,16 +17,16 @@
 
             document.getElementById('add').onclick = function () {
 
-                if (!maunfacture.value || !category.value) {
+                if (!maunfacture.value.trim() || !category.value.trim()) {
                     alert('製造商或類別不可空白');
                     return;
                 }
                 data = {
                     id: id,
-                    maunfacture: maunfacture.value,
-                    category: category.value,
-                    minprice: minprice.value,
-                    price: price.value
+                    maunfacture: maunfacture.value.trim(),
+                    category: category.value.trim(),
+                    minprice: minprice.value.trim(),
+                    price: price.value.trim()
                 }
                 datas.push(data);
 
@@ -53,9 +53,9 @@
                         }
                     }
                 });
-                tagRa = document.createElement('td');
-                tagRa.appendChild(tagRadio);
-                tagTr.appendChild(tagRa);
+                tagTaRadio = document.createElement('td');
+                tagTaRadio.appendChild(tagRadio);
+                tagTr.appendChild(tagTaRadio);
                 let tagNum = document.createElement('td');
                 tagNum.innerHTML = datas.length;
                 tagTr.appendChild(tagNum);
@@ -71,7 +71,7 @@
                 tagButton.innerHTML = '刪除';
                 tagButton.onclick = function () {
                     for (let j = 0; j < datas.length; j++) {
-                        if (datas[j].id == tagTr.id) {
+                        if (datas[j].id === tagTr.id) {
                             datas.splice(j, 1);
                             break;
                         }
@@ -114,15 +114,18 @@
                 }
                 const informations = document.getElementsByName('information');
 
+                let chooseOption = false;
+
                 for (let information of informations) {
                     if (information.checked) {
+                        chooseOption = true;
                         let infor = information.parentNode.parentNode;
                         infor.childNodes[2].innerHTML = maunfacture.value;
                         infor.childNodes[3].innerHTML = category.value;
                         infor.childNodes[4].innerHTML = minprice.value;
                         infor.childNodes[5].innerHTML = price.value;
                         for (let key of datas) {
-                            if (key.id == infor.id) {
+                            if (key.id === infor.id) {
                                 key.maunfacture = maunfacture.value;
                                 key.category = category.value;
                                 key.minprice = minprice.value;
@@ -132,6 +135,11 @@
                         }
                         break;
                     }
+
+                }
+                if(!chooseOption){
+                    alert('請選擇修改項次');
+                    return;
                 }
             }
         }
@@ -144,7 +152,7 @@
 
         td {
             width: 100px;
-            height: 60px;
+            height: 20px;
             text-align: center;
         }
 
@@ -159,15 +167,15 @@
         }
 
         .radio-button {
-        width: 30px;
-        height: 20px;
+            width: 30px;
+            height: 20px;
         }
 
         .button {
-        width: 80px;
-        height: 30px;
-        font-size: 14px;
-    }
+            width: 80px;
+            height: 30px;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -189,12 +197,12 @@
             <th>底價
             </th>
             <td colspan="2" class="column" id="0">
-                <input type="text" id="minprice">
+                <input type="text" id="minprice" onkeyup="value=value.replace(/[^\d]/g,'') ">
             </td>
             <th>售價
             </th>
             <td colspan="2" class="column">
-                <input type="text" id="price">
+                <input type="text" id="price" onkeyup="value=value.replace(/[^\d]/g,'') ">
             </td>
         </tr>
         <tr>

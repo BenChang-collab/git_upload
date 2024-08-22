@@ -9,12 +9,11 @@
         window.onload = function(){
             const map = new HashMap();
             document.getElementById('put').onclick=function(){
-                let keyElenment=document.getElementById('key');
-                let key=keyElenment.value;
-                let valueElenment=document.getElementById('value');
-                let value=valueElenment.value;
-                if(map.contains(key) || key==false){
+                let key=document.getElementById('key').value.trim();
+                let value=document.getElementById('value').value.trim();
+                if(map.contains(key) || !key){
                     alert('KEY值已存在或空白');
+                    return;
                 }else{
                     map.put(key,value);
                     let tagP=document.createElement('p');
