@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        window.onload = function () {
+            let datas=[];
+            let data={};
+            document.getElementById('add').onclick = function () {
+                let manufactureElenment=document.getElementById('manufacture');
+                let manufacture=manufactureElenment.value;
+                let categoryElenment=document.getElementById('category');
+                let category=categoryElenment.value;
+                let minpriceElenment=document.getElementById('minprice');
+                let minprice=minpriceElenment.value;
+                let priceElenment=document.getElementById('price');
+                let price=priceElenment.value;
+                data ={
+                    manufacture:manufacture,
+                    category:category,
+                    minprice:minprice,
+                    price:price
+                }
+                datas.push(data);
+                console.log(datas);
+                let tagResult = document.getElementById('result');
+                tagResult.innerHTML='';
+                for(i=0;i<datas.length;i++){
+                    
+                
+                
+                let tagTr = document.createElement('tr');
+                tagResult.appendChild(tagTr);
+                let tagRadio = document.createElement('input');
+                tagRadio.setAttribute('type', 'radio');
+                tagRadio.setAttribute('name', 'information');
+                tagTaRadio = document.createElement('td');
+                tagTaRadio.appendChild(tagRadio);
+                tagTr.appendChild(tagTaRadio);
+                let tagNum = document.createElement('td');
+                tagNum.innerHTML = (i+1);
+                tagTr.appendChild(tagNum);
+                    for (let key in datas[i]) {
+                    let tagTd = document.createElement('td');
+                    tagTd.innerHTML = datas[i][key];
+                    tagTr.appendChild(tagTd);
+                }
+                let tagButton = document.createElement('button');
+                tagButton.innerHTML = '刪除';
+                tagButton.onclick = function () {
+                    for (let j = 0; j < datas.length; j++) {
+                        if (datas[j].id == tagTr.id) {
+                            datas.splice(j, 1);
+                            break;
+                        }
+                    }
+                    tagResult.removeChild(tagTr);
+
+                    let rows = tagResult.getElementsByTagName('tr');
+                    for (let j = 0; j < rows.length; j++) {
+                        rows[j].getElementsByTagName('td')[1].innerHTML = (j + 1);
+                    }
+                };
+            }
+        }
+    }
+    </script>
+    <style>
+        th {
+            width: 100px;
+            height: 60px;
+        }
+
+        td {
+            width: 100px;
+            height: 20px;
+            text-align: center;
+        }
+
+        .column {
+            width: 300px;
+            height: 60px;
+        }
+
+        input[type="text"] {
+            width: 250px;
+            height: 30px;
+        }
+
+        .radio-button {
+        width: 30px;
+        height: 20px;
+        }
+
+        .button {
+        width: 80px;
+        height: 30px;
+        font-size: 14px;
+    }
+    </style>
+</head>
+
+<body>
+    <table border="1" cellspacing="0">
+        <tr>
+            <th>製造商
+            </th>
+            <td colspan="2" class="column">
+                <input type="text" id="manufacture">
+            </td>
+            <th>類別
+            </th>
+            <td colspan="2" class="column">
+                <input type="text" id="category">
+            </td>
+        </tr>
+        <tr>
+            <th>底價
+            </th>
+            <td colspan="2" class="column" id="0">
+                <input type="text" id="minprice">
+            </td>
+            <th>售價
+            </th>
+            <td colspan="2" class="column">
+                <input type="text" id="price">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <button id="add">新增</button>
+                <span> </span>
+                <button id="revise">修改</button>
+                <span> </span>
+                <button id="delete">清空</button>
+            </td>
+        </tr>
+    </table>
+    </br>
+    <table border="1" cellspacing="0"width="750px" >
+        <thead>
+            <td></td>
+            <td class="column">序號</td>
+            <td class="column">製造商</td>
+            <td class="column">類別</td>
+            <td class="column">底價</td>
+            <td class="column">售價</td>
+            <td></td>
+        </thead>
+        <tbody id="result"></tbody>
+    </table>
+</body>
+
+</html>

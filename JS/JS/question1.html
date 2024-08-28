@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="HashMap.js"></script>
+    <script type="text/javaScript">
+        window.onload = function(){
+            const map = new HashMap();
+            document.getElementById('put').onclick=function(){
+                let key=document.getElementById('key').value.trim();
+                let value=document.getElementById('value').value.trim();
+                if(map.contains(key) || !key){
+                    alert('KEY值已存在或空白');
+                    return;
+                }else{
+                    map.put(key,value);
+                    let tagP=document.createElement('p');
+                    let tagT=document.createTextNode(key+':'+map.get(key));
+                    tagP.appendChild(tagT);
+                    let tagResult=document.getElementById('result');
+                    tagResult.appendChild(tagP);
+                };
+        }
+            document.getElementById('clear').onclick=function(){
+                map.clear();
+                document.getElementById('key').value = "";
+                document.getElementById('value').value = "";
+                let result = document.getElementById('result');
+                while (result.hasChildNodes()) {
+                    result.removeChild(result.firstChild);
+                }
+        }
+    }
+    </script>
+    <style>
+        p{
+            margin-left: 1cm;
+        }
+    </style>
+</head>
+<body>
+    <span>KEY</span><span> 　　　</span>
+    <input type="text" id="key"></input>
+    </br>
+    </br>
+    <span>VALUE</span><span>　　</span>
+    <input type="text" id="value"></input>
+    <hr/>
+    <span>　</span><button id="put">PUT</button><span>　　</span><button id="clear">CLEAR</button>
+    <hr/>
+    <span>【RESULT】</span>
+    <span id="result"></span>
+    
+</body>
+</html>

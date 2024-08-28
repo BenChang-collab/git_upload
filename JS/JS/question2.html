@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        window.onload = function () {
+            let datas = [];
+            let data = {};
+            let id = 0;
+            let maunfacture = document.getElementById('manufacture');
+            let category = document.getElementById('category');
+            let minprice = document.getElementById('minprice');
+            let price = document.getElementById('price');
+
+            document.getElementById('add').onclick = function () {
+                if (!maunfacture.value.trim() || !category.value.trim()) {
+                    alert('製造商或類別不可空白');
+                    return;
+                }
+                if(isNaN(minprice.value.trim()) || isNaN(price.value.trim())){
+                        alert('底價和售價請輸入數字');
+                        minprice.value='';
+                        price.value='';
+                        return;
+                }
+                data = {
+                    id: id,
+                    maunfacture: maunfacture.value.trim(),
+                    category: category.value.trim(),
+                    minprice: minprice.value.trim(),
+                    price: price.value.trim()
+                }
+                datas.push(data);
+
+                let tagResult = document.getElementById('result');
+                let tagTr = document.createElement('tr');
+                tagTr.setAttribute('id', id);
+                tagResult.appendChild(tagTr);
+
+                let tagRadio = document.createElement('input');
+                tagRadio.setAttribute('type', 'radio');
+                tagRadio.setAttribute('name', 'information');
+
+                tagRadio.addEventListener('click', function () {
+                    const informations = document.getElementsByName('information');
+
+                    for (let information of informations) {
+                        if (information.checked) {
+                            let infor = information.parentNode.parentNode;
+                            manufacture.value = infor.childNodes[2].innerHTML;
+                            category.value = infor.childNodes[3].innerHTML;
+                            minprice.value = infor.childNodes[4].innerHTML;
+                            price.value = infor.childNodes[5].innerHTML;
+                            break;
+                        }
+                    }
+                });
+                tagTaRadio = document.createElement('td');
+                tagTaRadio.appendChild(tagRadio);
+                tagTr.appendChild(tagTaRadio);
+                let tagNum = document.createElement('td');
+                tagNum.innerHTML = datas.length;
+                tagTr.appendChild(tagNum);
+                for (let key in datas[datas.length - 1]) {
+                    if (key === 'id') {
+                        continue;
+                    }
+                    let tagTd = document.createElement('td');
+                    tagTd.innerHTML = datas[datas.length - 1][key];
+                    tagTr.appendChild(tagTd);
+                }
+                let tagButton = document.createElement('button');
+                tagButton.innerHTML = '刪除';
+                tagButton.onclick = function () {
+                    for (let j = 0; j < datas.length; j++) {
+                        if (datas[j].id === tagTr.id) {
+                            datas.splice(j, 1);
+                            break;
+                        }
+                    }
+                    tagResult.removeChild(tagTr);
+
+                    let rows = tagResult.getElementsByTagName('tr');
+                    for (let j = 0; j < rows.length; j++) {
+                        rows[j].getElementsByTagName('td')[1].innerHTML = (j + 1);
+                    }
+                };
+
+                let tdB = document.createElement('td');
+                tdB.appendChild(tagButton);
+                tagTr.appendChild(tdB);
+                id++;
+            }
+            document.getElementById('delete').onclick = function () {
+                datas = [];
+                data = {};
+                id = 0;
+                manufacture.value = '';
+                category.value = '';
+                minprice.value = '';
+                price.value = '';
+                let result = document.getElementById('result');
+                while (result.hasChildNodes()) {
+                    result.removeChild(result.firstChild);
+                }
+            }
+            document.getElementById('revise').onclick = function () {
+
+                if (!maunfacture.value) {
+                    alert('製造商不可以空白');
+                    return;
+                }
+                if (!category.value) {
+                    alert('類別不可以空白');
+                    return;
+                }
+                if(isNaN(minprice.value)||isNaN(price.value )){
+                    alter('底價和售價請輸入數字');
+                    return;
+                }
+                const informations = document.getElementsByName('information');
+
+                let chooseOption = false;
+
+                for (let information of informations) {
+                    if (information.checked) {
+                        chooseOption = true;
+                        let infor = information.parentNode.parentNode;
+                        infor.childNodes[2].innerHTML = maunfacture.value;
+                        infor.childNodes[3].innerHTML = category.value;
+                        infor.childNodes[4].innerHTML = minprice.value;
+                        infor.childNodes[5].innerHTML = price.value;
+                        for (let key of datas) {
+                            if (key.id === infor.id) {
+                                key.maunfacture = maunfacture.value;
+                                key.category = category.value;
+                                key.minprice = minprice.value;
+                                key.price = price.value;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+
+                }
+                if(!chooseOption){
+                    alert('請選擇修改項次');
+                    return;
+                }
+            }
+        }
+    </script>
+    <style>
+        th {
+            width: 100px;
+            height: 60px;
+        }
+
+        td {
+            width: 100px;
+            height: 20px;
+            text-align: center;
+        }
+
+        .column {
+            width: 300px;
+            height: 60px;
+        }
+
+        input[type="text"] {
+            width: 250px;
+            height: 30px;
+        }
+
+        .radio-button {
+            width: 30px;
+            height: 20px;
+        }
+
+        .button {
+            width: 80px;
+            height: 30px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <table border="1" cellspacing="0">
+        <tr>
+            <th>製造商
+            </th>
+            <td colspan="2" class="column">
+                <input type="text" id="manufacture">
+            </td>
+            <th>類別
+            </th>
+            <td colspan="2" class="column">
+                <input type="text" id="category">
+            </td>
+        </tr>
+        <tr>
+            <th>底價
+            </th>
+            <td colspan="2" class="column" id="0">
+                <input type="text" id="minprice" >
+            </td>
+            <th>售價
+            </th>
+            <td colspan="2" class="column">
+                <input type="text" id="price" >
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <button id="add">新增</button>
+                <span> </span>
+                <button id="revise">修改</button>
+                <span> </span>
+                <button id="delete">清空</button>
+            </td>
+        </tr>
+    </table>
+    </br>
+    <table border="1" cellspacing="0" width="750px">
+        <thead>
+            <td></td>
+            <td class="column">序號</td>
+            <td class="column">製造商</td>
+            <td class="column">類別</td>
+            <td class="column">底價</td>
+            <td class="column">售價</td>
+            <td></td>
+        </thead>
+        <tbody id="result"></tbody>
+    </table>
+</body>
+
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<head>
+    <title>期中測驗</title>
+    <script type="text/javascript">
+        window.onload = function () {
+            // 共用API方法，請勿更動
+            var callApi = function callApi(url, param) {
+                return fetch(url, {
+                    method: 'post',
+                    body: JSON.stringify(param),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(function (response) {
+                    return response.json();
+                });
+            }
+            let number = document.getElementById('name');
+
+            // button觸發查詢與在畫面顯示回傳值
+            document.getElementById('btnSubmit').addEventListener('click', function () {
+                // 請將查詢前要做的事情寫在下方
+                if (!(2 <= number.value && number.value <= 6 && number.value % 2 === 0)) {
+                    number.value = '';
+                    alert('請輸入2~6的偶數');
+                    return;
+                }
+                let tableTag = document.getElementById('table');
+                while (tableTag.hasChildNodes()) {
+                    tableTag.removeChild(tableTag.firstChild);
+                }
+                tab(number.value);
+
+                function tab(n) {
+                    for (var i = 0; i < n; i++) {
+                        tagTr = document.createElement('tr');
+                        tableTag.appendChild(tagTr);
+                        for (var j = 0; j < n; j++) {
+                            tagTd = document.createElement('td');
+                            tagTr.appendChild(tagTd);
+                        }
+                    }
+                }
+
+                // 請把要送至後端查詢的資訊，包裝成物件
+                var param = {
+                    /*, 範例程式：*/
+                    num: number.value,
+                };
+
+                /* 呼叫callApi方法需傳入2個參數(1.各題後端API的URL, 2.包裝成物件的param)
+                範例程式：'http://localhost:8080/midterm/demoCode'
+                第一題_發撲克牌：'http://localhost:8080/midterm/deal'
+                第二題_證件號碼驗證：'http://localhost:8080/midterm/checkId'
+                第二題_證件號碼驗證_加分題：'http://localhost:8080/midterm/getRandomId'
+                第三題_Wordle：'http://localhost:8080/midterm/wordle'
+                第四題_對對碰：'http://localhost:8080/midterm/matchingGame'
+                第五題_捷運車資計算：'http://localhost:8080/midterm/metro'
+                */
+                callApi('http://localhost:8080/midterm/matchingGame', param).then(function (response) {
+                    /* API回傳的內容為後端組出的Map，例：
+                    {"pokerA":[],"success":true,"returnMessage":"驗證成功","metro_fee":100}
+                	
+                    可透過response.[key]取值，例：response.returnMessage = '驗證成功'
+                    */
+                    let vocabMap = response.vocabularies;
+                    let vocabArray = [];
+                    for (let value of vocabMap.values()) {
+                        vocabArray.push(value);
+
+                    // 複製 vocabularies 並確保每個值出現兩次
+                    let valuesToDisplay = [];
+                    for (let i = 0; i < vocabArray.length; i++) {
+                        valuesToDisplay.push(vocabArray[i]);
+                        valuesToDisplay.push(vocabArray[i]);
+                    }
+
+                    // 使用 Fisher-Yates 洗牌算法來隨機打亂 valuesToDisplay 陣列
+                    for (let i = valuesToDisplay.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        [valuesToDisplay[i], valuesToDisplay[j]] = [valuesToDisplay[j], valuesToDisplay[i]]; // 交換元素
+                    }
+
+                    // 將隨機值分配到 td 元素
+                    let tdElements = document.getElementsByTagName('td');
+                    for (let i = 0; i < tdElements.length; i++) {
+                        tdElements[i].innerHTML = valuesToDisplay[i];
+                    }
+                    // console.log('metro_fee--->' + response.metro_fee);
+            }});
+            });
+        }
+    </script>
+    <style>
+        td {
+            background-color: #4cbdc1;
+            width: 200px;
+            height: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!--請將html程式碼寫在<body>中
+	按下「送出」按鈕觸發查詢-->
+    請輸入<input type="text" id="name" name="name" placeholder="請輸入2~6之間的偶數">
+    <button type="button" id="btnSubmit">送出</button>
+    <table id="table">
+    </table>
+</body>
+
+</html>

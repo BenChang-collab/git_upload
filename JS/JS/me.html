@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8>
+    <title>ME</title>
+    <script type="text/javascript">
+        window.onload = function () {
+            let other = document.getElementById('other');
+            let inputs = document.getElementsByClassName('input');
+            other.onclick = function () {
+                for(let key of inputs){
+                    if (other.checked === true) {
+                        key.disabled = false;
+                }
+                    if (other.checked === false){
+                    key.disabled = true;
+                    key.value= '';
+                }
+                }   
+            }
+
+            document.getElementById('button').onclick = function () {
+                let name = document.getElementById('name').value;
+                let location=document.getElementById('location').value;
+                let exps=document.getElementsByName('experience');
+                let experience;
+                let languages=document.getElementsByName('language');
+                let language='';
+                for (let exp of exps) {
+                    if (exp.checked) {
+                        experience=exp.value;
+                    }
+                }
+                for(let lang of languages){
+                    if(lang.checked){
+                        language+='，'+lang.value;
+                    }
+                }
+                if(document.getElementById('other').checked){                    
+                    language+= (' '+ document.getElementById('otherLaug').value);
+                    }
+                if (!name) {
+                    alert('名字為必填欄位')
+                }
+                let x =confirm('英文名字: '+name+'\n哪裡人: '+location+'\n正式工作經驗: '+experience+'\n語言: '+language)
+                if(x){
+                    alert('HI~~'+name);
+                }else{
+                    alert('請填寫英文名');
+                }
+            }
+        };
+
+    </script>
+</head>
+
+<body>
+    <img src="C:\Users\Admin\Desktop\JS\images.jpg">
+    </br>
+    <span>英文名:</span>
+    <input type="text" name="name" id="name" />
+    </br>
+    <span>哪裡人:</span>
+    <select id="location">
+        <option selected>請選擇</option>
+        <option value="台北市">台北市</option>
+        <option value="新北市">新北市</option>
+        <option value="桃園市">桃園市</option>
+    </select>
+    </br>
+    <span>正式工作經驗</span>
+    <lable><input type="radio" name="experience" value="有" >有</lable>
+    <lable><input type="radio" name="experience" value="沒有" >沒有</lable>
+    </br>
+    <span>語言</span>
+    <input type="checkbox" value="國語" name="language">國語
+    <input type="checkbox" value="台語" name="language">台語
+    <input type="checkbox" id="other" value="other">其他
+    <input type="text" class="input" disabled name="language" id="otherLaug">
+    <table border="1">
+        <tr>
+            <td colspan="3">如果可以出國旅遊的話，想去~</td>
+        </tr>
+        <tr>
+            <td width=5px>1</td>
+            <td width=150px></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    </br>
+    <button type='button' id="button">Say Hi</button>
+</body>
+
+</html>

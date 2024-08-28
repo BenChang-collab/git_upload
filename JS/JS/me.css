@@ -1,0 +1,15 @@
+img{
+    width: 200px;
+    height: 200px;
+}
+div{
+    background-color: yellow;
+    width:700px;
+}
+.pink{
+    background-color: pink;
+}
+input{
+    text-align: center;
+    margin-left: 13px;
+}

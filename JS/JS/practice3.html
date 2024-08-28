@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            window.onload = function () {
+                document.getElementById('button').onclick = function () {
+                    let n = document.getElementById('input').value;
+                    console.log(n);
+                    let warn = document.getElementById('warn')
+                    if(n > 2 && n<26 ){
+                        for(let i =0;i<n;i++){
+                            document.write('　'+'　')
+                            document.write('　'+'*');
+                            for(let j=0;j<i;j++){
+                                document.write('　'+'　');
+                                document.write('　'+'*'+'<br/>');
+                            }
+                        }
+                        /*
+                        for(let i=0;i<(Math.floor(n/2))+1;i++){
+                            document.writeln('　'+'　'+'*'+'<br/>');
+                        }
+                            */
+                    }else{
+                        warn.innerHTML='請輸入正確數字'}
+                }
+            };
+        
+        </script>
+        <style>
+            p{
+                color:red;
+            }
+        </style>
+    </head>
+
+
+<body>
+    <span>想要劃出幾層的樹?(限定:3~25)</span>
+    </br>
+    <input type="text" id="input" />
+    <button type="button" id="button">送出</button>
+    </br>
+    <p id="warn"></p>
+
+</body>
+
+</html>
